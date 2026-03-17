@@ -18,7 +18,7 @@ class Route(models.Model):
 	origin = models.CharField(max_length=100)
 	destination = models.CharField(max_length=100)
 	estimated_duration = models.DurationField(help_text="Duración estimada del viaje")
-	image = models.FileField(upload_to="routes/", blank=True, null=True)
+	image = models.ImageField(upload_to="routes/", blank=True, null=True)
 
 	class Meta:
 		verbose_name = "Ruta"
