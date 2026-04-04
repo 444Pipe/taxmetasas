@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Detalle de la Ruta: {{ route.origin }} a {{ route.destination }}</h1>
+    
+    <div class="row">
+        <!-- Mapa de Google -->
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-0">
+                    <!-- Contenedor del Mapa -->
+                    <div id="map" style="height: 400px; width: 100%; border-radius: 5px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de la ruta -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Información de Viaje</h5>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Origen:</strong> <span>{{ route.origin }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Destino:</strong> <span>{{ route.destination }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Duración est.:</strong> <span>{{ route.estimated_duration }}</span>
+                        </li>
+                    </ul>
+
+                    <p class="text-muted small">
+                        Asegúrate de llegar a la terminal al menos 30 minutos antes de la hora de salida programada para tu abordaje.
+                    </p>
+                    
+                    <button class="btn btn-success w-100 mt-2">Continuar con Reserva</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Paso 2 y 3: Inicialización segura de Google Maps usando Contexto y JavaScript -->
+<!-- Evitamos usar la sintaxis inline para mayor limpieza -->
+{{ map_data|json_script:"mapData" }}
+
+<script>
+    function initMap() {
+        const mapData = JSON.parse(document.getElementById('mapData').textContent);
+        
+        // Coordenadas por defecto (Región del Meta / Villavicencio)
+        const defaultCenter = { lat: 4.1420, lng: -73.6266 };
+        
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 7,
+            center: defaultCenter,
+        });
+
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer();
+        
+        directionsRenderer.setMap(map);
+
+        // Validamos si tenemos los datos completos para trazar la ruta
+        if (mapData.origin && mapData.destination) {
+            const request = {
+                origin: mapData.origin,
+                destination: mapData.destination,
+                travelMode: google.maps.TravelMode.DRIVING 
+            };
+            
+            directionsService.route(request, function(result, status) {
+                if (status == 'OK') {
+                    directionsRenderer.setDirections(result);
+                } else {
+                    console.error("No se pudo trazar la ruta. Status: " + status);
+                    // Si falla el trazo, centramos y ponemos marcadores manuales
+                    new google.maps.Marker({ position: mapData.origin, map: map, title: 'Origen' });
+                    new google.maps.Marker({ position: mapData.destination, map: map, title: 'Destino' });
+                    map.setCenter(mapData.origin);
+                }
+            });
+        }
+    }
+</script>
+
+<!-- Carga del script de Google Maps -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=initMap"></script>
+{% endblock %}

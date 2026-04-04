@@ -4,6 +4,8 @@ from django.db import models
 class Location(models.Model):
 	name = models.CharField(max_length=150, unique=True)
 	is_terminal = models.BooleanField(default=True, help_text="Marca si es una terminal principal")
+	latitude = models.FloatField(null=True, blank=True, help_text="Latitud para Google Maps")
+	longitude = models.FloatField(null=True, blank=True, help_text="Longitud para Google Maps")
 
 	class Meta:
 		verbose_name = "Ubicación"

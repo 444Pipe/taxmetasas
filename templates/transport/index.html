@@ -103,7 +103,7 @@
 	        {% if route.min_price %}
 	        <span class="route-price mb-2">Desde $ {{ route.min_price }}</span>
 	        {% endif %}
-	        <button class="btn btn-primary w-100">RESERVAR</button>
+	        <a href="{% url 'route_detail' route.pk %}" class="btn btn-primary w-100">VER RUTA</a>
         </div>
       </div>
     </div>

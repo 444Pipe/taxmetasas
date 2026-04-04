@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar Perfil -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 text-center">
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <!-- Placeholder Avatar -->
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center text-white" style="width: 100px; height: 100px; background-color: #c1121f; font-size: 2.5rem;">
+                            {{ user.username|make_list|first|upper }}
+                        </div>
+                    </div>
+                    <h4 class="mb-1" style="color: #c1121f;">{{ user.username }}</h4>
+                    <p class="text-muted mb-3">{{ user.email|default:"Sin correo registrado" }}</p>
+                    <p class="small text-muted mb-0">Miembro desde: {{ user.date_joined|date:"d M Y" }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contenido Principal -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h3 class="mb-4" style="color: #c1121f;">Mis Tiquetes Recientes</h3>
+                    {% if tiquetes %}
+                        <!-- Placeholder for future ticket implementation -->
+                        <div class="alert alert-info border-0 rounded-3">
+                            Tienes viajes programados. <!-- Reemplazar cuando se cree el modelo de tickets -->
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5 bg-light rounded-3">
+                            <h5 class="text-muted mb-3">No tienes tiquetes comprados aún</h5>
+                            <a href="{% url 'home' %}" class="btn btn-outline-primary rounded-pill px-4">Explorar Rutas</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h3 class="mb-4" style="color: #c1121f;">Detalles de la Cuenta</h3>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 text-muted">Usuario</div>
+                        <div class="col-sm-9 fw-semibold">{{ user.username }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 text-muted">Nombre Completo</div>
+                        <div class="col-sm-9 fw-semibold">{{ user.get_full_name|default:"No especificado" }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 text-muted">Correo</div>
+                        <div class="col-sm-9 fw-semibold">{{ user.email|default:"No especificado" }}</div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-top">
+                        <form action="{% url 'logout' %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger px-4 rounded-3">Cerrar Sesión</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
