@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-import os
 from dotenv import load_dotenv
 
 import dj_database_url
@@ -36,17 +35,30 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-ikh$c(#9)5#s5zzjov0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False").lower() in {"1", "true", "yes"}
 
-ALLOWED_HOSTS = [
+ALLOWED_HOSTS = {
     host.strip()
     for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
     if host.strip()
-]
+}
 
-CSRF_TRUSTED_ORIGINS = [
+railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "").strip()
+if railway_domain:
+    ALLOWED_HOSTS.add(railway_domain)
+
+# Permite cualquier subdominio *.up.railway.app para despliegues de Railway.
+ALLOWED_HOSTS.add(".up.railway.app")
+ALLOWED_HOSTS = sorted(ALLOWED_HOSTS)
+
+CSRF_TRUSTED_ORIGINS = {
     origin.strip()
     for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
     if origin.strip()
-]
+}
+
+if railway_domain:
+    CSRF_TRUSTED_ORIGINS.add(f"https://{railway_domain}")
+
+CSRF_TRUSTED_ORIGINS = sorted(CSRF_TRUSTED_ORIGINS)
 
 
 # Application definition
