@@ -82,6 +82,22 @@
       /* Animations */
       .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
       .reveal.active { opacity: 1; transform: translateY(0); }
+
+      /* Responsive adjustments */
+      @media (max-width: 991.98px) {
+        .hero-gradient { background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 100%); }
+        .hero-content h1.display-4 { font-size: 2.5rem; }
+        .navbar-collapse {
+          background: rgba(255,255,255,0.98);
+          padding: 1.5rem;
+          border-radius: 0.75rem;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+          margin-top: 1rem;
+        }
+        .nav-link::after { display: none; }
+        .top-strip .container { justify-content: center !important; text-align: center; flex-direction: column; }
+        .brand-tagline { font-size: 0.75rem; }
+      }
     </style>
     {% block extra_head %}{% endblock %}
   </head>
@@ -97,7 +113,7 @@
       <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}" aria-label="Ir a inicio de TAXMETA">
           <img src="{% static 'logo.avif' %}" alt="TAXMETA S.A." class="brand-logo me-2">
-          <span class="brand-tagline">Por el Progreso del Llano</span>
+          <span class="brand-tagline d-none d-sm-inline">Por el Progreso del Llano</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
