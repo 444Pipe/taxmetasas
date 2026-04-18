@@ -7,29 +7,34 @@
       <div class="row align-items-center g-4">
         <div class="col-lg-6 text-white">
 	          <h1 class="fw-bold mb-3">Viaja con confianza con TAXMETA S.A.</h1>
-	          <p class="lead mb-4">Reserva tus rutas intermunicipales con una experiencia moderna, rápida y segura.</p>
+	          <p class="lead mb-4">Reserva tus rutas intermunicipales con una experiencia moderna, rapida y segura.</p>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge rounded-pill text-bg-light text-dark px-3 py-2">+30 destinos</span>
+            <span class="badge rounded-pill text-bg-light text-dark px-3 py-2">Salidas diarias</span>
+            <span class="badge rounded-pill text-bg-light text-dark px-3 py-2">Compra facil</span>
+          </div>
         </div>
         <div class="col-lg-6">
           <div class="card shadow-lg border-0">
             <div class="card-body p-4">
               <h5 class="card-title mb-3">Buscar tu próximo viaje</h5>
-              <form method="get">
+              <form method="get" action="{% url 'home' %}">
                 <div class="row g-3">
                   <div class="col-md-4">
                     <label class="form-label small">Origen</label>
-	                    <input type="text" name="origin" class="form-control" placeholder="Ciudad de origen" list="origin-list">
+	                    <input type="text" name="origin" class="form-control" placeholder="Ciudad de origen" list="origin-list" value="{{ selected_origin }}">
                   </div>
                   <div class="col-md-4">
                     <label class="form-label small">Destino</label>
-	                    <input type="text" name="destination" class="form-control" placeholder="Ciudad de destino" list="destination-list">
+	                    <input type="text" name="destination" class="form-control" placeholder="Ciudad de destino" list="destination-list" value="{{ selected_destination }}">
                   </div>
                   <div class="col-md-4">
                     <label class="form-label small">Fecha</label>
-                    <input type="date" name="date" class="form-control">
+                    <input type="date" name="date" class="form-control" value="{{ selected_date }}">
                   </div>
 	              <div class="col-md-4">
 	                <label class="form-label small">Pasajeros</label>
-	                <input type="number" name="passengers" min="1" value="1" class="form-control">
+	                <input type="number" name="passengers" min="1" value="{{ selected_passengers|default:1 }}" class="form-control">
 	              </div>
                   <div class="col-12 d-grid mt-2">
 	                    <button type="submit" class="btn btn-primary btn-lg">BUSCAR RUTAS</button>
@@ -56,7 +61,7 @@
 	{% endfor %}
 </datalist>
 
-<section class="container my-5">
+<section class="container my-5" id="promociones">
   {% if active_banners %}
   <div id="mainBannerCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
     <div class="carousel-inner rounded-4 overflow-hidden shadow">
@@ -86,7 +91,14 @@
   </div>
   {% endif %}
 
-  <h2 class="h4 mb-3">Rutas destacadas</h2>
+  {% if has_filters %}
+  <div class="alert alert-light border shadow-sm mb-4" role="status">
+    Se encontraron <strong>{{ results_count }}</strong> rutas para tu busqueda.
+    <a href="{% url 'home' %}" class="ms-2 link-danger fw-semibold">Limpiar filtros</a>
+  </div>
+  {% endif %}
+
+  <h2 class="h4 mb-3" id="destinos">{% if has_filters %}Resultados encontrados{% else %}Rutas destacadas{% endif %}</h2>
   <div class="row g-4">
     {% for route in featured_routes %}
     <div class="col-12 col-sm-6 col-lg-3">
@@ -107,25 +119,31 @@
         </div>
       </div>
     </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="alert alert-warning shadow-sm">
+        No encontramos rutas con los criterios actuales. Prueba con otro origen, destino o una fecha diferente.
+      </div>
+    </div>
     {% endfor %}
   </div>
 
-  <hr class="my-5">
-  <h3 class="h5 mb-3">Galería de rutas</h3>
+  <hr class="my-5" id="gestion-reserva">
+  <h3 class="h5 mb-3">Gestion de reserva en 3 pasos</h3>
   <div class="row g-3 mb-4">
     <div class="col-12 col-sm-4">
-      <div class="route-gallery-img bg-light d-flex align-items-center justify-content-center text-muted small">
-        Espacio para imagen de ruta 1
+      <div class="route-gallery-img bg-white d-flex align-items-center justify-content-center text-center px-3">
+        1. Elige origen, destino y fecha
       </div>
     </div>
     <div class="col-12 col-sm-4">
-      <div class="route-gallery-img bg-light d-flex align-items-center justify-content-center text-muted small">
-        Espacio para imagen de ruta 2
+      <div class="route-gallery-img bg-white d-flex align-items-center justify-content-center text-center px-3">
+        2. Compara horarios y tarifa
       </div>
     </div>
     <div class="col-12 col-sm-4">
-      <div class="route-gallery-img bg-light d-flex align-items-center justify-content-center text-muted small">
-        Espacio para imagen de ruta 3
+      <div class="route-gallery-img bg-white d-flex align-items-center justify-content-center text-center px-3">
+        3. Inicia sesion para continuar tu compra
       </div>
     </div>
   </div>
